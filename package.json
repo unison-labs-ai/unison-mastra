@@ -1,0 +1,54 @@
+{
+  "name": "@unisonlabs/mastra",
+  "version": "0.1.0",
+  "description": "Long-term memory for Mastra agents, powered by the Unison brain",
+  "license": "MIT",
+  "author": "Unison Labs",
+  "homepage": "https://unisonlabs.ai",
+  "bugs": {
+    "url": "https://github.com/unison-labs-ai/unison-mastra/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/unison-labs-ai/unison-mastra.git"
+  },
+  "keywords": [
+    "mastra",
+    "memory",
+    "llm",
+    "ai-agents",
+    "knowledge-graph",
+    "unison"
+  ],
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "peerDependencies": {
+    "@mastra/core": ">=0.1.0"
+  },
+  "devDependencies": {
+    "@mastra/core": "^0.10.9",
+    "tsup": "^8.5.0",
+    "typescript": "^5.8.3",
+    "vitest": "^3.2.3"
+  }
+}
