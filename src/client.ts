@@ -89,21 +89,24 @@ export class UnisonClient {
       const data = (await res.json()) as {
         contextMd?: string;
         weakEvidence?: boolean;
+        // /v1/brain/context hits are flat (path/title/snippet at top level),
+        // unlike /v1/brain/search hits which nest under `doc` with `highlight`.
         hits?: Array<{
           score?: number;
-          highlight?: string;
-          doc?: { path?: string; title?: string; bodyMd?: string };
+          snippet?: string;
+          path?: string;
+          title?: string;
         }>;
       };
       return {
         contextMd: data.contextMd ?? "",
         weakEvidence: Boolean(data.weakEvidence),
         hits: (data.hits ?? []).map((h) => ({
-          path: h.doc?.path ?? "",
-          title: h.doc?.title ?? "",
+          path: h.path ?? "",
+          title: h.title ?? "",
           score: h.score ?? 0,
-          highlight: h.highlight ?? "",
-          bodyMd: h.doc?.bodyMd,
+          highlight: h.snippet ?? "",
+          bodyMd: undefined,
         })),
       };
     } catch {
@@ -140,9 +143,9 @@ export class UnisonClient {
       });
       if (!res.ok) return null;
       const data = (await res.json()) as {
-        results?: Array<{ jobId?: string }>;
+        items?: Array<{ jobId?: string }>;
       };
-      return { jobId: data.results?.[0]?.jobId ?? "" };
+      return { jobId: data.items?.[0]?.jobId ?? "" };
     } catch {
       return null;
     }
