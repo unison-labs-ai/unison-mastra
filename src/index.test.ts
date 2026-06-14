@@ -72,8 +72,9 @@ describe("UnisonClient", () => {
           hits: [
             {
               score: 0.9,
-              highlight: "some highlight",
-              doc: { path: "/private/kb/foo.md", title: "Foo", bodyMd: "body" },
+              snippet: "some highlight",
+              path: "/private/kb/foo.md",
+              title: "Foo",
             },
           ],
         })
@@ -88,7 +89,7 @@ describe("UnisonClient", () => {
 
   describe("ingestConversation", () => {
     it("POSTs /v1/brain/ingest with correct payload shape", async () => {
-      const fetch = mockFetch(200, { results: [{ jobId: "job_abc" }] });
+      const fetch = mockFetch(200, { items: [{ jobId: "job_abc" }] });
       vi.stubGlobal("fetch", fetch);
 
       const client = new UnisonClient({ token: "usk_live_test", apiUrl: "https://brain.unisonlabs.ai" });
