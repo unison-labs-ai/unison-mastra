@@ -35,10 +35,23 @@ import {
   type WorkingMemoryTemplate,
 } from "@mastra/core";
 import type { CoreMessage, UIMessage } from "ai";
-import { UnisonClient, type ConversationTurn, type RecallResult } from "./client.js";
+import {
+  UnisonClient,
+  type ConversationTurn,
+  type RecallResult,
+  type RememberDump,
+} from "./client.js";
 
 export { UnisonClient } from "./client.js";
-export type { ConversationTurn, RecallResult, UnisonClientOptions, RecallHit, IngestResult } from "./client.js";
+export type {
+  ConversationTurn,
+  RecallResult,
+  UnisonClientOptions,
+  RecallHit,
+  IngestResult,
+  RememberDump,
+  RememberResult,
+} from "./client.js";
 
 // ---------------------------------------------------------------------------
 // Options
@@ -103,6 +116,18 @@ export class UnisonMemory {
     sourceRef: string
   ): Promise<void> {
     await this.client.ingestConversation(turns, sourceRef);
+  }
+
+  /**
+   * Run the `/remember` skill over a dump — judgment + curation (filter, dedupe,
+   * file /private/kb notes + entity facts). Heavier than persist(); call it once
+   * per session/thread, not per turn.
+   */
+  async remember(
+    dump: RememberDump,
+    opts: { source?: string; sourceRef?: string; hints?: string } = {}
+  ): Promise<void> {
+    await this.client.remember(dump, opts);
   }
 }
 
@@ -226,6 +251,22 @@ export class UnisonMastraMemory extends MastraMemory {
     turns: ConversationTurn[]
   ): Promise<void> {
     return this.unison.persist(turns, threadId);
+  }
+
+  /**
+   * Curate a whole thread into long-term memory via the `/remember` skill.
+   * Call this once when a thread closes (per the automatic-memory philosophy:
+   * per-turn `persistTurn` ingests cheaply; `rememberThread` does the heavier
+   * judgment+curation pass once over the thread).
+   *
+   * @param threadId  Used as the idempotency `sourceRef`.
+   * @param turns     The thread's turns to remember.
+   */
+  async rememberThread(
+    threadId: string,
+    turns: ConversationTurn[]
+  ): Promise<void> {
+    return this.unison.remember({ turns }, { source: "mastra-thread", sourceRef: threadId });
   }
 
   // -----------------------------------------------------------------------

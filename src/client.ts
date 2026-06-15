@@ -35,6 +35,16 @@ export interface IngestResult {
   jobId: string;
 }
 
+/** What to remember: freeform text, conversation turns, or a raw session log. */
+export type RememberDump =
+  | string
+  | { turns: ConversationTurn[] }
+  | { sessionJsonl: string };
+
+export interface RememberResult {
+  jobId: string;
+}
+
 // ---------------------------------------------------------------------------
 // Client options
 // ---------------------------------------------------------------------------
@@ -146,6 +156,32 @@ export class UnisonClient {
         items?: Array<{ jobId?: string }>;
       };
       return { jobId: data.items?.[0]?.jobId ?? "" };
+    } catch {
+      return null;
+    }
+  }
+
+  /**
+   * POST /v1/brain/remember — run the `/remember` skill server-side over a dump:
+   * apply the save-or-skip filter, dedupe, and file curated /private/kb notes +
+   * entity facts. Returns the background jobId, or null on error.
+   *
+   * @param dump      Freeform text, conversation turns, or a raw session log.
+   * @param opts      Optional source / sourceRef (idempotency) / hints.
+   */
+  async remember(
+    dump: RememberDump,
+    opts: { source?: string; sourceRef?: string; hints?: string } = {}
+  ): Promise<RememberResult | null> {
+    try {
+      const res = await fetch(`${this.baseUrl}/v1/brain/remember`, {
+        method: "POST",
+        headers: this.headers,
+        body: JSON.stringify({ dump, ...opts }),
+      });
+      if (!res.ok) return null;
+      const data = (await res.json()) as { jobId?: string };
+      return { jobId: data.jobId ?? "" };
     } catch {
       return null;
     }
