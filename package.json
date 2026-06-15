@@ -40,7 +40,8 @@
   "scripts": {
     "build": "tsup",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "release": "bun scripts/release.ts"
   },
   "peerDependencies": {
     "@mastra/core": ">=0.1.0"

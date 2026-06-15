@@ -145,16 +145,13 @@ All requests use `Authorization: Bearer <token>`.
 
 ## Releasing
 
-CI runs on every push and pull request. To publish a new version to npm:
-
-1. Set the `NPM_TOKEN` secret in the GitHub repo settings (Settings → Secrets → Actions).
-2. Tag the commit:
+`npm login` once, then:
 
 ```bash
-git tag v0.2.0 && git push origin v0.2.0
+bun run release
 ```
 
-The `release.yml` workflow picks up `v*` tags, builds, and runs `npm publish --access public --provenance`.
+Builds, publishes `@unisonlabs/mastra` to npm (idempotent — skips if the version is already published), then tags and pushes the release commit.
 
 ---
 
