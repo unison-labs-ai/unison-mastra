@@ -128,6 +128,34 @@ describe("UnisonClient", () => {
       expect(result).toBeNull();
     });
   });
+
+  describe("remember", () => {
+    it("POSTs /v1/brain/remember with the dump + opts and returns jobId", async () => {
+      const fetch = mockFetch(200, { jobId: "job_rem" });
+      vi.stubGlobal("fetch", fetch);
+
+      const client = new UnisonClient({ token: "usk_live_test", apiUrl: "https://brain.unisonlabs.ai" });
+      const result = await client.remember(
+        { turns: [{ role: "user", content: "we chose Postgres" }] },
+        { source: "mastra-thread", sourceRef: "thread_001" }
+      );
+
+      const [url, init] = fetch.mock.calls[0] as [string, RequestInit & { body: string }];
+      expect(url).toContain("/v1/brain/remember");
+      expect(init.method).toBe("POST");
+      const body = JSON.parse(init.body as string);
+      expect(body.dump.turns[0].content).toBe("we chose Postgres");
+      expect(body.source).toBe("mastra-thread");
+      expect(body.sourceRef).toBe("thread_001");
+      expect(result?.jobId).toBe("job_rem");
+    });
+
+    it("returns null on error", async () => {
+      vi.stubGlobal("fetch", mockFetch(401, { error: "unauth" }));
+      const client = new UnisonClient({ token: "t" });
+      expect(await client.remember("x")).toBeNull();
+    });
+  });
 });
 
 // ---------------------------------------------------------------------------
