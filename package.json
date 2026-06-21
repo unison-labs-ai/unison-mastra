@@ -50,6 +50,6 @@
     "@mastra/core": "^0.10.9",
     "tsup": "^8.5.0",
     "typescript": "^5.8.3",
-    "vitest": "^3.2.3"
+    "vitest": "^4.1.9"
   }
 }
