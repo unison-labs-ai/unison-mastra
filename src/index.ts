@@ -120,7 +120,7 @@ export class UnisonMemory {
 
   /**
    * Run the `/remember` skill over a dump — judgment + curation (filter, dedupe,
-   * file /private/kb notes + entity facts). Heavier than persist(); call it once
+   * file curated notes to /private/notes/ and entity facts to /private/<kind>/). Heavier than persist(); call it once
    * per session/thread, not per turn.
    */
   async remember(

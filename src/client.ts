@@ -163,8 +163,7 @@ export class UnisonClient {
 
   /**
    * POST /v1/brain/remember — run the `/remember` skill server-side over a dump:
-   * apply the save-or-skip filter, dedupe, and file curated /private/kb notes +
-   * entity facts. Returns the background jobId, or null on error.
+   * apply the save-or-skip filter, dedupe, and file curated notes to /private/notes/ and entity facts to /private/<kind>/. Returns the background jobId, or null on error.
    *
    * @param dump      Freeform text, conversation turns, or a raw session log.
    * @param opts      Optional source / sourceRef (idempotency) / hints.

@@ -73,7 +73,7 @@ describe("UnisonClient", () => {
             {
               score: 0.9,
               snippet: "some highlight",
-              path: "/private/kb/foo.md",
+              path: "/private/notes/foo.md",
               title: "Foo",
             },
           ],
@@ -82,7 +82,7 @@ describe("UnisonClient", () => {
       const client = new UnisonClient({ token: "t" });
       const result = await client.recall("q");
       expect(result?.hits).toHaveLength(1);
-      expect(result?.hits[0]?.path).toBe("/private/kb/foo.md");
+      expect(result?.hits[0]?.path).toBe("/private/notes/foo.md");
       expect(result?.hits[0]?.score).toBe(0.9);
     });
   });
